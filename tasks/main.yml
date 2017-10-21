@@ -4,6 +4,10 @@
     project_config_name: 'redirect-{{nginx_redirect_project_name}}'
     cert_target: '/etc/letsencrypt/live/{{nginx_redirect_server_name.split(" ")[0]}}'
 
+- name: More facts
+  set_fact:
+    nginx_config_path: '/etc/nginx/sites-available/{{project_config_name}}.conf'
+
 - name: Install Nginx
   become: true
   action: apt pkg={{item}} state=present
@@ -21,7 +25,17 @@
   become: true
   template:
     src: nginx.conf
-    dest: '/etc/nginx/sites-available/{{project_config_name}}.conf'
+    dest: '{{nginx_config_path}}'
+  when: cert_file.stat.exists == False
+  notify:
+    - reload nginx
+
+- name: 'Configure site with SSL {{nginx_redirect_project_name}}'
+  become: true
+  template:
+    src: nginx-ssl.conf
+    dest: '{{nginx_config_path}}'
+  when: cert_file.stat.exists == True
   notify:
     - reload nginx
 
@@ -29,7 +43,7 @@
   become: true
   file:
     state: '{{ nginx_redirect_enabled | ternary("link", "absent")}}'
-    src: '/etc/nginx/sites-available/{{project_config_name}}.conf'
+    src: '{{nginx_config_path}}'
     dest: '/etc/nginx/sites-enabled/{{project_config_name}}.conf'
   notify:
     - reload nginx
