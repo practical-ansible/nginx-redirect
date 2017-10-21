@@ -1,8 +1,8 @@
 ---
 - name: Configure facts
   set_fact:
-    project_config_name: 'django-{{nginx_static_project_name}}-{{nginx_static_project_environment}}'
-    cert_target: '/etc/letsencrypt/live/{{nginx_static_server_name.split(" ")[0]}}'
+    project_config_name: 'redirect-{{nginx_redirect_project_name}}-{{nginx_redirect_project_environment}}'
+    cert_target: '/etc/letsencrypt/live/{{nginx_redirect_server_name.split(" ")[0]}}'
 
 - name: Install Nginx
   action: apt pkg={{item}} state=present
@@ -15,23 +15,23 @@
     path: '{{cert_target}}'
   register: cert_file
 
-- name: 'Configure site {{nginx_static_project_name}}'
+- name: 'Configure site {{nginx_redirect_project_name}}'
   template:
     src: nginx.conf
     dest: '/etc/nginx/sites-available/{{project_config_name}}'
   notify:
     - reload nginx
 
-- name: 'Enable site {{nginx_static_project_name}}'
+- name: 'Enable site {{nginx_redirect_project_name}}'
   file:
-    state: '{{ nginx_static_enabled | ternary("link", "absent")}}'
+    state: '{{ nginx_redirect_enabled | ternary("link", "absent")}}'
     src: '/etc/nginx/sites-available/{{project_config_name}}'
     dest: '/etc/nginx/sites-enabled/{{project_config_name}}'
   notify:
     - reload nginx
 
-- name: 'Configure Letsencrypt for {{nginx_static_project_name}}'
-  shell: 'certbot -n --nginx --agree-tos --domains {{nginx_static_server_name.split(" ") | join(",")}}'
+- name: 'Configure Letsencrypt for {{nginx_redirect_project_name}}'
+  shell: 'certbot -n --nginx --agree-tos --domains {{nginx_redirect_server_name.split(" ") | join(",")}}'
   changed_when: '"Keeping" not in result.stdout'
   register: result
   when:
