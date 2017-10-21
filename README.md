@@ -6,7 +6,8 @@ Define domain redirect on your Nginx. Useful when adding/removing from `www.` fr
 ## Variables
 
 * `nginx_redirect_server_name` - Space separated list of domain names that are to be redirected
-* `nginx_redirect_destination` - Target domain name
+* `nginx_redirect_destination_domain` - Target domain name, preferred over url.
+* `nginx_redirect_destination_url` - Target URL
 * `nginx_redirect_enabled` - Enable (default True)
 * `nginx_redirect_status` - Http status used for redirect (default 301)
 
@@ -20,5 +21,5 @@ Define domain redirect on your Nginx. Useful when adding/removing from `www.` fr
   roles:
     - role: practical-ansible.nginx-redirect
       nginx_redirect_server_name: www.example.com
-      nginx_redirect_destination: example.com
+      nginx_redirect_destination_domain: example.com
 ```
