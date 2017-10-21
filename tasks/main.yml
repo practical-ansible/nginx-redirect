@@ -5,17 +5,20 @@
     cert_target: '/etc/letsencrypt/live/{{nginx_redirect_server_name.split(" ")[0]}}'
 
 - name: Install Nginx
+  become: true
   action: apt pkg={{item}} state=present
   with_items:
     - nginx
     - python-certbot-nginx
 
 - name: Find certificate
+  become: true
   stat:
     path: '{{cert_target}}'
   register: cert_file
 
 - name: 'Configure site {{nginx_redirect_project_name}}'
+  become: true
   template:
     src: nginx.conf
     dest: '/etc/nginx/sites-available/{{project_config_name}}'
@@ -23,6 +26,7 @@
     - reload nginx
 
 - name: 'Enable site {{nginx_redirect_project_name}}'
+  become: true
   file:
     state: '{{ nginx_redirect_enabled | ternary("link", "absent")}}'
     src: '/etc/nginx/sites-available/{{project_config_name}}'
@@ -31,6 +35,7 @@
     - reload nginx
 
 - name: 'Configure Letsencrypt for {{nginx_redirect_project_name}}'
+  become: true
   shell: 'certbot -n --nginx --agree-tos --domains {{nginx_redirect_server_name.split(" ") | join(",")}}'
   changed_when: '"Keeping" not in result.stdout'
   register: result
