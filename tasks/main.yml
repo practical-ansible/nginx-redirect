@@ -1,7 +1,7 @@
 ---
 - name: Configure facts
   set_fact:
-    project_config_name: 'redirect-{{nginx_redirect_project_name}}-{{nginx_redirect_project_environment}}'
+    project_config_name: 'redirect-{{nginx_redirect_project_name}}'
     cert_target: '/etc/letsencrypt/live/{{nginx_redirect_server_name.split(" ")[0]}}'
 
 - name: Install Nginx
