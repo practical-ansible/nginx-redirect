@@ -21,7 +21,7 @@
   become: true
   template:
     src: nginx.conf
-    dest: '/etc/nginx/sites-available/{{project_config_name}}'
+    dest: '/etc/nginx/sites-available/{{project_config_name}}.conf'
   notify:
     - reload nginx
 
@@ -29,8 +29,8 @@
   become: true
   file:
     state: '{{ nginx_redirect_enabled | ternary("link", "absent")}}'
-    src: '/etc/nginx/sites-available/{{project_config_name}}'
-    dest: '/etc/nginx/sites-enabled/{{project_config_name}}'
+    src: '/etc/nginx/sites-available/{{project_config_name}}.conf'
+    dest: '/etc/nginx/sites-enabled/{{project_config_name}}.conf'
   notify:
     - reload nginx
 
