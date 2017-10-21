@@ -1,0 +1,38 @@
+---
+- name: Configure facts
+  set_fact:
+    project_config_name: 'django-{{nginx_static_project_name}}-{{nginx_static_project_environment}}'
+    cert_target: '/etc/letsencrypt/live/{{nginx_static_server_name.split(" ")[0]}}'
+
+- name: Install Nginx
+  action: apt pkg={{item}} state=present
+  with_items:
+    - nginx
+    - python-certbot-nginx
+
+- name: Find certificate
+  stat:
+    path: '{{cert_target}}'
+  register: cert_file
+
+- name: 'Configure site {{nginx_static_project_name}}'
+  template:
+    src: nginx.conf
+    dest: '/etc/nginx/sites-available/{{project_config_name}}'
+  notify:
+    - reload nginx
+
+- name: 'Enable site {{nginx_static_project_name}}'
+  file:
+    state: '{{ nginx_static_enabled | ternary("link", "absent")}}'
+    src: '/etc/nginx/sites-available/{{project_config_name}}'
+    dest: '/etc/nginx/sites-enabled/{{project_config_name}}'
+  notify:
+    - reload nginx
+
+- name: 'Configure Letsencrypt for {{nginx_static_project_name}}'
+  shell: 'certbot -n --nginx --agree-tos --domains {{nginx_static_server_name.split(" ") | join(",")}}'
+  changed_when: '"Keeping" not in result.stdout'
+  register: result
+  when:
+    - cert_file.stat.exists == False

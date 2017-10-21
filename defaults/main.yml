@@ -1,0 +1,5 @@
+---
+nginx_redirect_destination: ''
+nginx_redirect_server_name: ''
+nginx_redirect_enabled: True
+nginx_redirect_status: 301
