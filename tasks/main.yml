@@ -11,7 +11,7 @@
 - name: Install Nginx
   become: true
   apt:
-    packages: "{{ item }}"
+    name: "{{ packages }}"
     state: present
   vars:
     packages:
