@@ -1,7 +1,10 @@
 # Practical Ansible Nginx redirect
 
-Define domain redirect on your Nginx. Useful when adding/removing from `www.` from URL, useful when your domain has multiple aliases.
+[![CircleCI](https://img.shields.io/circleci/project/github/practical-ansible/nginx-redirect.svg)](https://circleci.com/gh/practical-ansible/nginx-redirect)
+[![Quality](https://img.shields.io/ansible/quality/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx-redirect)
+[![Downloads](https://img.shields.io/ansible/role/d/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx-redirect)
 
+Define domain redirect on your Nginx. Useful when adding/removing from `www.` from URL, useful when your domain has multiple aliases.
 
 ## Variables
 
