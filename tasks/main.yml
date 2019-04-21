@@ -1,12 +1,12 @@
 ---
 - name: Configure facts
   set_fact:
-    project_config_name: 'redirect-{{nginx_redirect_project_name}}'
-    cert_target: '/etc/letsencrypt/live/{{nginx_redirect_server_name.split(" ")[0]}}'
+    project_config_name: 'redirect-{{ nginx_redirect_project_name }}'
+    cert_target: '/etc/letsencrypt/live/{{ nginx_redirect_server_name.split(" ")[0] }}'
 
 - name: More facts
   set_fact:
-    nginx_config_path: '/etc/nginx/sites-available/{{project_config_name}}.conf'
+    nginx_config_path: '/etc/nginx/sites-available/{{ project_config_name }}.conf'
 
 - name: Install Nginx
   become: true
@@ -21,40 +21,39 @@
 - name: Find certificate
   become: true
   stat:
-    path: '{{cert_target}}'
+    path: '{{ cert_target }}'
   register: cert_file
 
-- name: 'Configure site {{nginx_redirect_project_name}}'
+- name: 'Configure site {{ nginx_redirect_project_name }}'
   become: true
   template:
     src: nginx.conf
-    dest: '{{nginx_config_path}}'
-  when: cert_file.stat.exists == False
+    dest: '{{ nginx_config_path }}'
+  when: not cert_file.stat.exists
   notify:
     - reload nginx
 
-- name: 'Configure site with SSL {{nginx_redirect_project_name}}'
+- name: 'Configure site with SSL {{ nginx_redirect_project_name }}'
   become: true
   template:
     src: nginx-ssl.conf
-    dest: '{{nginx_config_path}}'
-  when: cert_file.stat.exists == True
+    dest: '{{ nginx_config_path }}'
+  when: cert_file.stat.exists
   notify:
     - reload nginx
 
-- name: 'Enable site {{nginx_redirect_project_name}}'
+- name: 'Enable site {{ nginx_redirect_project_name }}'
   become: true
   file:
-    state: '{{ nginx_redirect_enabled | ternary("link", "absent")}}'
-    src: '{{nginx_config_path}}'
-    dest: '/etc/nginx/sites-enabled/{{project_config_name}}.conf'
+    state: '{{ nginx_redirect_enabled | ternary("link", "absent") }}'
+    src: '{{ nginx_config_path }}'
+    dest: '/etc/nginx/sites-enabled/{{ project_config_name }}.conf'
   notify:
     - reload nginx
 
-- name: 'Configure Letsencrypt for {{nginx_redirect_project_name}}'
+- name: 'Configure Letsencrypt for {{ nginx_redirect_project_name }}'
   become: true
-  shell: 'certbot -n --nginx --agree-tos --domains {{nginx_redirect_server_name.split(" ") | join(",")}}'
+  shell: 'certbot -n --nginx --agree-tos --domains {{ nginx_redirect_server_name.split(" ") | join(",") }}'
   changed_when: '"Keeping" not in result.stdout'
   register: result
-  when:
-    - cert_file.stat.exists == False
+  when: not cert_file.stat.exists
