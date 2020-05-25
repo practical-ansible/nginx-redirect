@@ -1,30 +1,35 @@
 # Practical Ansible Nginx redirect
 
-[![CircleCI](https://img.shields.io/circleci/project/github/practical-ansible/nginx-redirect.svg)](https://circleci.com/gh/practical-ansible/nginx-redirect)
-[![Quality](https://img.shields.io/ansible/quality/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx-redirect)
-[![Downloads](https://img.shields.io/ansible/role/d/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx-redirect)
+[![Integration](https://github.com/practical-ansible/nginx_redirect/workflows/CI/badge.svg)](https://github.com/practical-ansible/nginx_redirect/actions)
+[![Quality](https://img.shields.io/ansible/quality/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
+[![Downloads](https://img.shields.io/ansible/role/d/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
+[![Role](https://img.shields.io/ansible/role/21427)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
 
 Define domain redirect on your Nginx. Useful when adding/removing from `www.` from URL, useful when your domain has multiple aliases.
 
-## Variables
-
-* `nginx_redirect_project_name` - Name that is used to identify your redirect
-* `nginx_redirect_server_name` - Space separated list of domain names that are to be redirected
-* `nginx_redirect_destination_domain` - Target domain name, preferred over url.
-* `nginx_redirect_destination_url` - Target URL
-* `nginx_redirect_enabled` - Enable (default True)
-* `nginx_redirect_status` - Http status used for redirect (default 301)
-
-
-## Minimal config example
+## Example: Remove www.
 
 ```yml
 - name: Configure redirect to remove www from URL
   hosts: myhosts
   become: yes
   roles:
-    - role: practical-ansible.nginx-redirect
-      nginx_redirect_project_name: example
-      nginx_redirect_server_name: www.example.com
-      nginx_redirect_destination_domain: example.com
+    - role: practical-ansible.nginx_redirect
+      project_name: example
+      server_names: www.example.com
+      destination_domain: example.com
+      status: 301
+```
+
+## Example: Redirect subdomain to a URL
+
+```yml
+- name: Configure redirect to remove www from URL
+  hosts: myhosts
+  become: yes
+  roles:
+    - role: practical-ansible.nginx_redirect
+      project_name: example
+      server_names: marketing-campaign.example.com
+      destination_url: example.com/landing-page
 ```
