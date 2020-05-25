@@ -1,6 +1,6 @@
 # Practical Ansible Nginx redirect
 
-[![Integration](https://github.com/practical-ansible/nginx_redirect/workflows/CI/badge.svg)](https://github.com/practical-ansible/nginx_redirect/actions)
+[![Integration](https://github.com/practical-ansible/nginx-redirect/workflows/CI/badge.svg)](https://github.com/practical-ansible/nginx-redirect/actions)
 [![Quality](https://img.shields.io/ansible/quality/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
 [![Downloads](https://img.shields.io/ansible/role/d/21427.svg)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
 [![Role](https://img.shields.io/ansible/role/21427)](https://galaxy.ansible.com/practical-ansible/nginx_redirect)
